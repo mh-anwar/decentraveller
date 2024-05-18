@@ -1,7 +1,28 @@
 {
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "path": "^0.12.7"
-  }
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.19.2",
+		"near-api-js": "^4.0.1",
+		"nodemon": "^3.1.0",
+		"path": "^0.12.7"
+	},
+	"name": "hawkhacks-backend",
+	"version": "1.0.0",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node index.js",
+		"live": "nodemon index.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mh-anwar/decentraveller.git"
+	},
+	"bugs": {
+		"url": "https://github.com/mh-anwar/decentraveller/issues"
+	},
+	"homepage": "https://github.com/mh-anwar/decentraveller#readme",
+	"description": ""
 }
