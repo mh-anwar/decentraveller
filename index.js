@@ -5,9 +5,8 @@ import path from 'path';
 import { convertToNear, nearConnection } from './near-functions.js';
 const app = express();
 const port = process.env.PORT || 4000;
-const googleMapsApiKey = 'AIzaSyDbzPrpnA5bpx93D9r8ZJTkE3SieROXCMg';
 import axios from 'axios';
-import { gptCompletion } from './gptApi.js';
+import { gptCompletion, getElevation, getGeocode, getNearbyPlaces, getPlaceDetails } from './gptApi.js';
 
 // Parses HTTP Request body
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -60,59 +59,31 @@ give location,
 get coordinates and elevation
 */
 app.get('/get-coordinates', async (req, res) => {
-	const location = req.query.location;
-
-	if (!location) {
-		return res
-			.status(400)
-			.json({ error: 'Location query parameter is required' });
-	}
-
-	try {
-		const geocodeResponse = await axios.get(
-			'https://maps.googleapis.com/maps/api/geocode/json',
-			{
-				params: {
-					address: location,
-					key: googleMapsApiKey,
-				},
-			}
-		);
-
-		let { results } = geocodeResponse.data;
-
-		if (results.length === 0) {
-			return res.status(404).json({ error: 'Location not found' });
+		const location = req.query.location;
+	
+		if (!location) {
+			return res.status(400).json({ error: 'Location query parameter is required' });
 		}
+	
+		try {
+			const { lat, lng } = await getGeocode(location);
+			const elevation = await getElevation(lat, lng);
+			const nearbyPlaces = await getNearbyPlaces(lat, lng);
+			const detailedPlaces = await getPlaceDetails(nearbyPlaces, lat, lng);
 
-		const { lat, lng } = results[0].geometry.location;
-
-		const elevationResponse = await axios.get(
-			'https://maps.googleapis.com/maps/api/elevation/json',
-			{
-				params: {
-					locations: `${lat},${lng}`,
-					key: googleMapsApiKey,
-				},
-			}
-		);
-
-		let elevationResults = elevationResponse.data.results;
-
-		if (elevationResults.length === 0) {
-			return res.status(404).json({ error: 'Elevation data not found' });
+			console.log(detailedPlaces)
+			
+			res.json({
+				latitude: lat,
+				longitude: lng,
+				elevation: elevation,
+				nearbyPlaces: detailedPlaces
+			});
+		} catch (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred while fetching data' });
 		}
-
-		const elevation = elevationResults[0].elevation;
-
-		res.json({ latitude: lat, longitude: lng, elevation: elevation });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({
-			error: 'An error occurred while fetching coordinates and elevation',
-		});
-	}
-});
+	});
 
 app.post('/gptCompletion', (req, res) => {
 	const messages = req.body.messages;
