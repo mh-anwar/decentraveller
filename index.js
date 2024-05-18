@@ -41,6 +41,11 @@ app.post('/accountDetails', async (req, res) => {
 	res.send(await account.sendMoney(data.receiverId, data.amount));
 });
 
+
+/*
+give location, 
+get coordinates and elevation
+*/
 app.get('/get-coordinates', async (req, res) => {
     const location = req.query.location;
 
