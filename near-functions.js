@@ -2,7 +2,7 @@ import { connect, keyStores, KeyPair } from 'near-api-js';
 
 const myKeyStore = new keyStores.InMemoryKeyStore();
   
-const PRIVATE_KEY = "by8kdJoJHu7uUkKfoaLd2J2Dp1q1TigeWMG123pHdu9UREqPcshCM223kWadm";
+const PRIVATE_KEY = "7LKryKHUzFzUdW6fhrYVsx2UTXbGw7Dj7xzMgcX6QMN6";
 
 const keyPair = KeyPair.fromString(PRIVATE_KEY);
 
@@ -23,6 +23,9 @@ async function nearConnection() {
 	return nearConnection;
 }
 
-console.log(await nearConnection());
+const account = await nearConnection();
+
+console.log(account.connection);
 
 export { nearConnection };
+// gets account details in terms of authorized apps and transactions
