@@ -1,8 +1,11 @@
 {
 	"dependencies": {
+		"@langchain/openai": "^0.0.32",
 		"axios": "^1.6.8",
+		"cheerio": "^1.0.0-rc.12",
 		"cors": "^2.8.5",
 		"express": "^4.19.2",
+		"langchain": "^0.2.0",
 		"near-api-js": "^4.0.1",
 		"nodemon": "^3.1.0",
 		"openai": "^4.47.1",

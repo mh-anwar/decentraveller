@@ -12,9 +12,10 @@ async function gptCompletion(messages) {
 		messages: messages,
 		model: 'gpt-4o',
 	});
-	return chatCompletion.data.choices[0].message.content;
+	return chatCompletion.choices[0];
 }
 
+console.log(await gptCompletion([{role: "system", content: "Given the address of a building, you will use the internet to classify the type of building it is. Your only output will be the classification, containing at most 10 words and atleast 6."}, {role: "user", content: "24 Forwell Creek Rd, Waterloo, ON N2J 3Z3"}]));
 // Function to convert degrees to radians
 function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -141,8 +142,6 @@ async function getPlaceDetails(places, lat, lng) {
             const { deltaX, deltaY } = calculateVector(lat, lng, placeLat, placeLng);
 
             return {
-                name: place.displayName.text,
-                type: place.displayName.type,
                 displacementX: deltaX,
                 displacementY: deltaY,
             };

@@ -68,16 +68,14 @@ app.get('/get-coordinates', async (req, res) => {
 		try {
 			const { lat, lng } = await getGeocode(location);
 			const elevation = await getElevation(lat, lng);
-			const nearbyPlaces = await getNearbyPlaces(lat, lng);
-			const detailedPlaces = await getPlaceDetails(nearbyPlaces, lat, lng);
-
-			console.log(detailedPlaces)
+					// const nearbyPlaces = await getNearbyPlaces(lat, lng);
+					// const detailedPlaces = await getPlaceDetails(nearbyPlaces, lat, lng);
 			
 			res.json({
 				latitude: lat,
 				longitude: lng,
-				elevation: elevation,
-				nearbyPlaces: detailedPlaces
+				 elevation: elevation,
+				// nearbyPlaces: detailedPlaces
 			});
 		} catch (error) {
 			console.error(error);
