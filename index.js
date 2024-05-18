@@ -47,66 +47,71 @@ app.post('/sendMoney', async (req, res) => {
 	res.send(await account.sendMoney(data.receiverId, data.amount));
 });
 
-
-// TODO not done lol
 app.post('/accountDetails', async (req, res) => {
 	const data = req.body;
 	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
-	res.send(await account.sendMoney(data.receiverId, data.amount));
+	res.send(await account.state());
 });
-
 
 /*
 give location, 
 get coordinates and elevation
 */
 app.get('/get-coordinates', async (req, res) => {
-    const location = req.query.location;
+	const location = req.query.location;
 
-    if (!location) {
-        return res.status(400).json({ error: 'Location query parameter is required' });
-    }
+	if (!location) {
+		return res
+			.status(400)
+			.json({ error: 'Location query parameter is required' });
+	}
 
-    try {
-        const geocodeResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-            params: {
-                address: location,
-                key: googleMapsApiKey
-            }
-        });
+	try {
+		const geocodeResponse = await axios.get(
+			'https://maps.googleapis.com/maps/api/geocode/json',
+			{
+				params: {
+					address: location,
+					key: googleMapsApiKey,
+				},
+			}
+		);
 
-        let { results } = geocodeResponse.data;
+		let { results } = geocodeResponse.data;
 
-        if (results.length === 0) {
-            return res.status(404).json({ error: 'Location not found' });
-        }
+		if (results.length === 0) {
+			return res.status(404).json({ error: 'Location not found' });
+		}
 
-        const { lat, lng } = results[0].geometry.location;
+		const { lat, lng } = results[0].geometry.location;
 
-        const elevationResponse = await axios.get('https://maps.googleapis.com/maps/api/elevation/json', {
-            params: {
-                locations: `${lat},${lng}`,
-                key: googleMapsApiKey
-            }
-        });
+		const elevationResponse = await axios.get(
+			'https://maps.googleapis.com/maps/api/elevation/json',
+			{
+				params: {
+					locations: `${lat},${lng}`,
+					key: googleMapsApiKey,
+				},
+			}
+		);
 
-        let elevationResults = elevationResponse.data.results;
+		let elevationResults = elevationResponse.data.results;
 
-        if (elevationResults.length === 0) {
-            return res.status(404).json({ error: 'Elevation data not found' });
-        }
+		if (elevationResults.length === 0) {
+			return res.status(404).json({ error: 'Elevation data not found' });
+		}
 
-        const elevation = elevationResults[0].elevation;
+		const elevation = elevationResults[0].elevation;
 
-        res.json({ latitude: lat, longitude: lng, elevation: elevation });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'An error occurred while fetching coordinates and elevation' });
-    }
+		res.json({ latitude: lat, longitude: lng, elevation: elevation });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			error: 'An error occurred while fetching coordinates and elevation',
+		});
+	}
 });
-
-
 
 app.listen(port, () => {
 	console.log(`Running on port: ${port}`);
