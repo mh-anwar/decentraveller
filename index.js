@@ -25,11 +25,9 @@ app.post('/accountBalance', async (req, res) => {
 
 app.post('/sendMoney', async (req, res) => {
 	const data = req.body;
-	console.log(data);
-	console.log(data.accountId, data.receiverId, data.amount);
-	const connection = await nearConnection();
+	const connection = await nearConnection(data.privKey);
 	const account = await connection.account(data.accountId);
-	return await account.sendMoney(data.receiverId, data.amount);
+	res.send(await account.sendMoney(data.receiverId, data.amount));
 });
 
 app.listen(port, () => {
