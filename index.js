@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 const googleMapsApiKey = 'AIzaSyDbzPrpnA5bpx93D9r8ZJTkE3SieROXCMg';
 import axios from 'axios';
+import { gptCompletion } from './gptApi.js';
 
 // Parses HTTP Request body
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -111,6 +112,13 @@ app.get('/get-coordinates', async (req, res) => {
 			error: 'An error occurred while fetching coordinates and elevation',
 		});
 	}
+});
+
+app.post('/gptCompletion', (req, res) => {
+	const messages = req.body.messages;
+	gptCompletion(messages).then((response) => {
+		res.send(response.data.choices[0].message.content);
+	});
 });
 
 app.listen(port, () => {
