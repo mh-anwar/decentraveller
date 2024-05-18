@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
-import { nearConnection } from './near-functions.js';
+import { convertToNear, nearConnection } from './near-functions.js';
 const app = express();
 const port = process.env.PORT || 4000;
 const googleMapsApiKey = 'AIzaSyDbzPrpnA5bpx93D9r8ZJTkE3SieROXCMg';
@@ -13,22 +13,37 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', async (req, res) => {
+	/* 
 	const data = req.body;
 	const connection = await nearConnection();
-	const account = await connection.account(data.accountId);
+	const account = await connection.account(data.accountId); */
+	res.send('Hello World');
 });
 
 app.post('/accountBalance', async (req, res) => {
 	const data = req.body;
-	const connection = await nearConnection();
+	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
-	return await account.getAccountBalance();
+	console.log(account);
+	const yoctoNear = await account.getAccountBalance();
+	res.send(yoctoNear.total);
+});
+
+app.post('/normalAccountBalance', async (req, res) => {
+	const data = req.body;
+	const connection = await nearConnection(data.privKey, data.accountId);
+	const account = await connection.account(data.accountId);
+	const yoctoNear = await account.getAccountBalance();
+	console.log(convertToNear(yoctoNear.total));
+	res.send(convertToNear(yoctoNear.total));
 });
 
 app.post('/sendMoney', async (req, res) => {
 	const data = req.body;
+	console.log(data);
 	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
+
 	res.send(await account.sendMoney(data.receiverId, data.amount));
 });
 
@@ -94,7 +109,7 @@ app.get('/get-coordinates', async (req, res) => {
 
 
 app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
+	console.log(`Running on port: ${port}`);
 });
 
 // ping endpoint
