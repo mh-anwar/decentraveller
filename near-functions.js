@@ -1,4 +1,4 @@
-import { connect, keyStores, KeyPair } from 'near-api-js';
+import { connect, keyStores, KeyPair, utils } from 'near-api-js';
 
 async function nearConnection(privKey, accountId) {
 	const myKeyStore = new keyStores.InMemoryKeyStore();
@@ -17,4 +17,8 @@ async function nearConnection(privKey, accountId) {
 	return nearConnection;
 }
 
-export { nearConnection };
+function convertToNear(yoctoNear) {
+	console.log(yoctoNear);
+	return utils.format.formatNearAmount(yoctoNear);
+}
+export { nearConnection, convertToNear };
