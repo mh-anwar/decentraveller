@@ -1,9 +1,9 @@
 import { connect, keyStores, KeyPair } from 'near-api-js';
 
-async function nearConnection(privKey) {
+async function nearConnection(privKey, accountId) {
 	const myKeyStore = new keyStores.InMemoryKeyStore();
 	const keyPair = KeyPair.fromString(privKey);
-	await myKeyStore.setKey('testnet', 'habibrahman.testnet', keyPair);
+	await myKeyStore.setKey('testnet', accountId, keyPair);
 
 	const connectionConfig = {
 		networkId: 'testnet',

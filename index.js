@@ -25,7 +25,7 @@ app.post('/accountBalance', async (req, res) => {
 
 app.post('/sendMoney', async (req, res) => {
 	const data = req.body;
-	const connection = await nearConnection(data.privKey);
+	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
 	res.send(await account.sendMoney(data.receiverId, data.amount));
 });
