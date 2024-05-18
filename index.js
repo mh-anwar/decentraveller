@@ -116,9 +116,8 @@ app.get('/get-coordinates', async (req, res) => {
 
 app.post('/gptCompletion', (req, res) => {
 	const messages = req.body.messages;
-	gptCompletion(messages).then((response) => {
-		res.send(response.data.choices[0].message.content);
-	});
+	const response = gptCompletion(messages);
+	res.send(response);
 });
 
 app.listen(port, () => {

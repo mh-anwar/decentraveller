@@ -9,6 +9,7 @@ async function gptCompletion(messages) {
 		messages: messages,
 		model: 'gpt-4o',
 	});
+	return chatCompletion.data.choices[0].message.content;
 }
 
 export { gptCompletion };
