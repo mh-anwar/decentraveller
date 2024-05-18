@@ -18,9 +18,18 @@ app.get('/', async (req, res) => {
 
 app.post('/accountBalance', async (req, res) => {
 	const data = req.body;
-	const connection = await nearConnection();
+	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
-	return await account.getAccountBalance();
+	console.log(account);
+	res.send(await account.getAccountBalance());
+});
+
+app.post('/normalAccountBalance', async (req, res) => {
+	const data = req.body;
+	const connection = await nearConnection(data.privKey, data.accountId);
+	const account = await connection.account(data.accountId);
+	console.log(account);
+	res.send(await account.getAccountBalance());
 });
 
 app.post('/sendMoney', async (req, res) => {
