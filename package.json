@@ -13,7 +13,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "node index.js",
-		"live": "nodemon index.js"
+		"live": "npm i && nodemon index.js"
 	},
 	"author": "",
 	"license": "ISC",
