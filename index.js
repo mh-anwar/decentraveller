@@ -94,20 +94,20 @@ app.get('/get-coordinates', async (req, res) => {
 });
 
 app.post('/gptCompletion', async (req, res) => {
+	console.log(req.body);
 	const inputJson = req.body.Value.messages;
-	
+
 	function extractMessages(json) {
-		return json.Value.map(item => ({
+		return json.Value.map((item) => ({
 			role: item.Value.role.Value,
-			content: item.Value.message.Value
+			content: item.Value.message.Value,
 		}));
 	}
 
-	const messages = extractMessages(inputJson)
+	const messages = extractMessages(inputJson);
 	const response = await gptCompletion(messages);
 	res.send(response);
 });
-
 
 app.post('/generateImage', async (req, res) => {
 	const prompt = req.body.prompt;
