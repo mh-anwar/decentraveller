@@ -99,6 +99,7 @@ app.get('/get-coordinates', async (req, res) => {
 
 app.post('/gptCompletion', (req, res) => {
 	const messages = req.body.messages;
+	console.log(req.body);
 	console.log(messages);
 	const response = gptCompletion(messages);
 	res.send(response);
