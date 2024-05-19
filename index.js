@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { convertToNear, nearConnection } from './near-functions.js';
 import crypto from 'crypto';
 const app = express();
@@ -120,15 +120,12 @@ app.post('/mintNft', async (req, res) => {
 	const accountId = data.accountId;
 	const tokenId = crypto.createHash('sha256');
 	tokenId.update(data.title);
-	const token = 'asdasdas'; // tokenId.digest('hex');
+	const token = tokenId.digest('hex');
 	const title = data.title;
-	const description = data.description;
 	const media = data.media;
-	console.log(
-		`./mint.sh ${accountId} ${token} ${title} ${description} ${media}`
-	);
-	exec(
-		`./mint.sh ${accountId} ${token} ${title} ${description} ${media}`,
+	console.log(`./mint.sh ${accountId} ${token} ${title} ${media}`);
+	/* exec(
+		`./mint.sh ${accountId} ${token} ${title} ${media}`,
 		(error, stdout, stderr) => {
 			if (error) {
 				console.error(`Error executing script: ${error.message}`);
@@ -143,7 +140,33 @@ app.post('/mintNft', async (req, res) => {
 			console.log(`Script output: ${stdout}`);
 			res.send({ status: 'success' });
 		}
-	);
+	); */
+
+	const mintProcess = spawn('./mint.sh', [accountId, token, title, media]);
+
+	mintProcess.stdout.on('data', (data) => {
+		// console.log(`Script output: ${data}`);
+		// Check for the confirmation request in the stdout
+		if (
+			data.toString().includes('account already has a deployed contract')
+		) {
+			mintProcess.stdin.write('y\n');
+		}
+	});
+
+	mintProcess.stderr.on('data', (data) => {
+		console.error(`Script stderr: ${data}`);
+		res.send({ status: 'error' });
+	});
+
+	mintProcess.on('close', (code) => {
+		if (code !== 0) {
+			console.error(`Script exited with code ${code}`);
+			res.send({ status: 'error' });
+		} else {
+			res.send({ status: 'success' });
+		}
+	});
 });
 
 app.listen(port, () => {
