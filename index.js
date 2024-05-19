@@ -45,14 +45,17 @@ app.post('/normalAccountBalance', async (req, res) => {
 });
 
 app.post('/sendMoney', async (req, res) => {
-	const data = req.body;
+	const data = req.body.Value;
 	console.log(data);
 
-	const connection = await nearConnection(data.privKey, data.accountId);
+	const connection = await nearConnection(
+		data.privKey.Value,
+		data.accountId.Value
+	);
 	console.log('made connection: ' + connection);
-	const account = await connection.account(data.accountId);
+	const account = await connection.account(data.accountId.Value);
 	console.log('made account: ' + account);
-	res.send(await account.sendMoney(data.receiverId, data.amount));
+	res.send(await account.sendMoney(data.receiverId.Value, data.amount.Value));
 });
 
 app.post('/accountDetails', async (req, res) => {
