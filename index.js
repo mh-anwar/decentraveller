@@ -102,9 +102,18 @@ app.post('/gptCompletion', async (req, res) => {
 	console.log('LOGSSS ' + JSON.stringify(req.body.Value.messages));
 	console.log('LOGSSS ' + JSON.stringify(req.body.Value.messages.Value));
 
-	const response = await gptCompletion(req.body.Value.messages.Value);
+	function extractMessages(json) {
+		return json.messages.Value.map(item => ({
+			role: item.Value.role.Value,
+			content: item.Value.message.Value
+		}));
+	}
+
+	const messages = extractMessages(req.body.Value.messages)
+	const response = await gptCompletion(messages);
 	res.send(response);
 });
+
 
 app.post('/generateImage', async (req, res) => {
 	const prompt = req.body.prompt;
