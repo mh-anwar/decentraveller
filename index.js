@@ -76,7 +76,7 @@ app.get('/get-coordinates', async (req, res) => {
 	}
 
 	try {
-		const { lat, lng } = await getGeocode(location);
+		const { lat, lng, city, country } = await getGeocode(location);
 		const elevation = await getElevation(lat, lng);
 		// const nearbyPlaces = await getNearbyPlaces(lat, lng);
 		// const detailedPlaces = await getPlaceDetails(nearbyPlaces, lat, lng);
@@ -85,6 +85,8 @@ app.get('/get-coordinates', async (req, res) => {
 			latitude: lat,
 			longitude: lng,
 			elevation: elevation,
+			city: city,
+			country: country,
 			// nearbyPlaces: detailedPlaces
 		});
 	} catch (error) {
