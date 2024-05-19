@@ -66,13 +66,15 @@ async function getGeocode(location) {
 
     const { results } = response.data;
     console.log("Geocode API: ", JSON.stringify(response.data, null, 2));
+    const city = results[0].address_components.find(component => component.types.includes("locality")).long_name;
+    const country = results[0].address_components.find(component => component.types.includes("country")).long_name;
 
     if (results.length === 0) {
         throw new Error('Location not found');
     }
 
     const { lat, lng } = results[0].geometry.location;
-    return { lat, lng };
+    return { lat, lng, city, country };
 }
 
 async function getElevation(lat, lng) {

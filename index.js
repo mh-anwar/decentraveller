@@ -75,7 +75,8 @@ app.get('/get-coordinates', async (req, res) => {
 	}
 
 	try {
-		const { lat, lng } = await getGeocode(location);
+		const re = await getGeocode(location);
+		const { lat, lng, city, country } = re; // Add equal sign (=) after the destructuring declaration
 		const elevation = await getElevation(lat, lng);
 		// const nearbyPlaces = await getNearbyPlaces(lat, lng);
 		// const detailedPlaces = await getPlaceDetails(nearbyPlaces, lat, lng);
@@ -84,6 +85,8 @@ app.get('/get-coordinates', async (req, res) => {
 			latitude: lat,
 			longitude: lng,
 			elevation: elevation,
+			city: city,
+			country: country,
 			// nearbyPlaces: detailedPlaces
 		});
 	} catch (error) {
