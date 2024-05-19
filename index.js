@@ -1,11 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 import path from 'path';
+import { exec } from 'child_process';
 import { convertToNear, nearConnection } from './near-functions.js';
+import crypto from 'crypto';
 const app = express();
 const port = process.env.PORT || 4000;
-import axios from 'axios';
+
 import {
 	gptCompletion,
 	getElevation,
@@ -107,6 +108,34 @@ app.post('/generateImage', async (req, res) => {
 	const prompt = req.body.prompt;
 	const response = await generateImage(prompt);
 	res.send(response);
+});
+
+app.post('/mintNft', async (req, res) => {
+	const data = req.body;
+	/* 	const accountId = data.accountId;
+	const tokenId = crypto.createHash('sha256');
+	tokenId.update(data.title);
+	const token = tokenId.digest('hex');
+	const title = data.title;
+	const description = data.description;
+	const media = data.media;
+	console.log(
+		`./mint.sh ${accountId} ${token} ${title} ${description} ${media}`
+	); */
+	exec('./mint.sh', (error, stdout, stderr) => {
+		if (error) {
+			console.error(`Error executing script: ${error.message}`);
+			return;
+		}
+
+		if (stderr) {
+			console.error(`Script stderr: ${stderr}`);
+			return;
+		}
+
+		console.log(`Script output: ${stdout}`);
+		res.send({ status: 'success' });
+	});
 });
 
 app.listen(port, () => {
