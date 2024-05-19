@@ -32,7 +32,6 @@ app.post('/accountBalance', async (req, res) => {
 	const data = req.body;
 	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
-	console.log(account);
 	const yoctoNear = await account.getAccountBalance();
 	res.send(yoctoNear.total);
 });
@@ -42,13 +41,11 @@ app.post('/normalAccountBalance', async (req, res) => {
 	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
 	const yoctoNear = await account.getAccountBalance();
-	console.log(convertToNear(yoctoNear.total));
 	res.send(convertToNear(yoctoNear.total));
 });
 
 app.post('/sendMoney', async (req, res) => {
 	const data = req.body;
-	console.log(data);
 	const connection = await nearConnection(data.privKey, data.accountId);
 	const account = await connection.account(data.accountId);
 
@@ -90,18 +87,18 @@ app.get('/get-coordinates', async (req, res) => {
 			// nearbyPlaces: detailedPlaces
 		});
 	} catch (error) {
-		console.error(error);
 		res.status(500).json({
 			error: 'An error occurred while fetching data',
 		});
 	}
 });
 
-app.post('/gptCompletion', (req, res) => {
-	const messages = req.body.value.messages;
-	console.log('LOG ' + req.body.value.messages);
+app.post('/gptCompletion', async (req, res) => {
+	const body = await req.body.value;
+	console.log('LOG ' + body);
+	console.log('LOGSSS ' + body.messages);
 
-	const response = gptCompletion(messages);
+	const response = gptCompletion(body.messages);
 	res.send(response);
 });
 
