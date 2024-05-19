@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import { exec } from 'child_process';
 import { convertToNear, nearConnection } from './near-functions.js';
-
+import crypto from 'crypto';
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -99,6 +99,7 @@ app.get('/get-coordinates', async (req, res) => {
 
 app.post('/gptCompletion', (req, res) => {
 	const messages = req.body.messages;
+	console.log(messages);
 	const response = gptCompletion(messages);
 	res.send(response);
 });
@@ -110,28 +111,34 @@ app.post('/generateImage', async (req, res) => {
 });
 
 app.post('/mintNft', async (req, res) => {
-	const data = await req.body;
-	console.log(data);
+	const data = req.body;
 	const accountId = data.accountId;
-	const privKey = 'adasdas';
+	const tokenId = crypto.createHash('sha256');
+	tokenId.update(data.title);
+	const token = 'asdasdas'; // tokenId.digest('hex');
 	const title = data.title;
 	const description = data.description;
 	const media = data.media;
+	console.log(
+		`./mint.sh ${accountId} ${token} ${title} ${description} ${media}`
+	);
+	exec(
+		`./mint.sh ${accountId} ${token} ${title} ${description} ${media}`,
+		(error, stdout, stderr) => {
+			if (error) {
+				console.error(`Error executing script: ${error.message}`);
+				res.send({ status: 'error' });
+			}
 
-	exec('./mint.sh', (error, stdout, stderr) => {
-		if (error) {
-			console.error(`Error executing script: ${error.message}`);
-			return;
+			if (stderr) {
+				console.error(`Script stderr: ${stderr}`);
+				res.send({ status: 'error' });
+			}
+
+			console.log(`Script output: ${stdout}`);
+			res.send({ status: 'success' });
 		}
-
-		if (stderr) {
-			console.error(`Script stderr: ${stderr}`);
-			return;
-		}
-
-		console.log(`Script output: ${stdout}`);
-		res.send({ status: 'success' });
-	});
+	);
 });
 
 app.listen(port, () => {
