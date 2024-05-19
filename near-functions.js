@@ -18,7 +18,6 @@ async function nearConnection(privKey, accountId) {
 }
 
 function convertToNear(yoctoNear) {
-	console.log(yoctoNear);
 	return utils.format.formatNearAmount(yoctoNear);
 }
 export { nearConnection, convertToNear };

@@ -94,9 +94,10 @@ app.get('/get-coordinates', async (req, res) => {
 });
 
 app.post('/gptCompletion', async (req, res) => {
-	const body = await req.body.value;
-	console.log('LOG ' + body);
-	console.log('LOGSSS ' + body.messages);
+	const body = await req.body;
+	console.log('LOG60 ' + body);
+	console.log('LOGSSS90 ' + body.value);
+	console.log('LOGSSS ' + JSON.stringify(req.body));
 
 	const response = gptCompletion(body.messages);
 	res.send(response);
