@@ -97,9 +97,12 @@ app.post('/gptCompletion', async (req, res) => {
 	const body = await req.body; /* 
 	console.log('LOG60 ' + body);
 	console.log('LOGSSS90 ' + body.Value); */
+	console.log('-----------------------------');
 	console.log('LOGSSS ' + JSON.stringify(req.body.Value));
+	console.log('LOGSSS ' + JSON.stringify(req.body.Value.messages));
+	console.log('LOGSSS ' + JSON.stringify(req.body.Value.messages.Value));
 
-	const response = await gptCompletion(req.body.Value);
+	const response = await gptCompletion(req.body.Value.messages.Value);
 	res.send(response);
 });
 
