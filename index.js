@@ -94,22 +94,16 @@ app.get('/get-coordinates', async (req, res) => {
 });
 
 app.post('/gptCompletion', async (req, res) => {
-	const body = await req.body; /* 
-	console.log('LOG60 ' + body);
-	console.log('LOGSSS90 ' + body.Value); */
-	console.log('-----------------------------');
-	console.log('LOGSSS ' + JSON.stringify(req.body.Value));
-	console.log('LOGSSS ' + JSON.stringify(req.body.Value.messages));
-	console.log('LOGSSS ' + JSON.stringify(req.body.Value.messages.Value));
-
+	const inputJson = req.body.Value.messages;
+	
 	function extractMessages(json) {
-		return json.messages.Value.map(item => ({
+		return json.Value.map(item => ({
 			role: item.Value.role.Value,
 			content: item.Value.message.Value
 		}));
 	}
 
-	const messages = extractMessages(req.body.Value.messages)
+	const messages = extractMessages(inputJson)
 	const response = await gptCompletion(messages);
 	res.send(response);
 });
