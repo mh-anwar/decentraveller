@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 import axios from 'axios';
 import { gptCompletion, getElevation, getGeocode, getNearbyPlaces, getPlaceDetails, generateImage } from './gptApi.js';
+import { makeSmartContractCall } from './mint-functions.js';
 
 // Parses HTTP Request body
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -89,6 +90,14 @@ app.post('/gptCompletion', (req, res) => {
 	res.send(response);
 });
 
+app.post('/createNft', (req, res) => {
+	const data = req.body;
+	makeSmartContractCall(data.privKey, data.accountId)
+		.then((res) => console.log('got transaction result:', res))
+		.catch((err) => console.error('things went wrong', err));
+	res.send();
+});
+
 app.post('/generateImage', async (req, res) => {
 	const prompt = req.body.prompt;
 	const response = await generateImage(prompt);
@@ -102,6 +111,8 @@ app.listen(port, () => {
 });
 
 // ping endpoint
-app.get('/ping', (req, res) => {
+app.post('/ping', (req, res) => {
+	const data = req.body;
+	console.log(data);
 	res.send('pong');
 });
