@@ -106,7 +106,7 @@ app.post('/gptCompletion', async (req, res) => {
 
 	const messages = extractMessages(inputJson);
 	const response = await gptCompletion(messages);
-	console.log('Our response is: ' + response);
+	console.log('Our response is: ' + JSON.parse(response));
 	res.send(response);
 });
 
