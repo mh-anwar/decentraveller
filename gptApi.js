@@ -3,7 +3,7 @@ import axios from 'axios';
 const googleMapsApiKey = 'AIzaSyDbzPrpnA5bpx93D9r8ZJTkE3SieROXCMg';
 
 const openai = new OpenAI({
-	apiKey: 'sk-proj-kNbNYM4MokximEdduPp1T3BlbkFJSAe0JVwIuCRfjZfG7viH', // This is the default and can be omitted
+	apiKey: 'sk-proj-BCy7LkvU1of35jOHmv6TT3BlbkFJYxYvrdNU1AnXowvdP4Wm', // This is the default and can be omitted
 });
 
 async function gptCompletion(messages) {
