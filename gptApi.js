@@ -1,9 +1,15 @@
 import OpenAI from 'openai';
 import axios from 'axios';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
+import { storage } from "./firebase.js";
+
+require('dotenv').config();
+
 const googleMapsApiKey = 'AIzaSyDbzPrpnA5bpx93D9r8ZJTkE3SieROXCMg';
 
 const openai = new OpenAI({
-	apiKey: 'sk-proj-BCy7LkvU1of35jOHmv6TT3BlbkFJYxYvrdNU1AnXowvdP4Wm', // This is the default and can be omitted
+	apiKey: 'sk-proj-wB4q1e7sDPtdEVNZnC3gT3BlbkFJ9I54pdRvCgiAMuwqGurx', // This is the default and can be omitted
 });
 
 async function gptCompletion(messages) {
@@ -174,21 +180,57 @@ async function getPlaceDetails(places, lat, lng) {
 	return placeDetails.filter(Boolean);
 }
 
-async function generateImage(image_description) {
-	try {
-		const response = await openai.images.generate({
-			prompt: image_description,
-			n: 1, // Number of images to generate
-			size: '1024x1024', // Size of the generated image
-		});
 
-		const imageUrl = response.data[0].url;
-		return imageUrl;
-	} catch (error) {
-		console.error('Error generating image:', error);
-		return null; // Returning null to indicate failure
-	}
+
+async function generateImage(image_description) {
+  try {
+    const response = await openai.images.generate({
+      prompt: image_description,
+      n: 1, // Number of images to generate
+      size: '256x256', // Size of the generated image
+    });
+
+    const imageUrl = response.data[0].url;
+
+    // Fetch the image as a blob
+    const imageResponse = await fetch(imageUrl);
+    const blob = await imageResponse.blob();
+
+    // Generate a unique file name
+    const storageRef = ref(storage, `uploads/${uuidv4()}`);
+    
+    // Upload the blob to Firebase Storage
+    const snapshot = await uploadBytes(storageRef, blob);
+    console.log('File uploaded successfully');
+
+    // Get the download URL
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log('File available at', downloadURL);
+
+    const data = {
+        title: image_description,
+        accountId: "mohammadanwar.testnet",
+        media: downloadURL,
+
+    }
+
+    axios.post('http://localhost:4000/mintNft', data)
+        .then((response) => {
+        console.log('Response:', response.data);
+        })
+        .catch((error) => {
+        console.error('Error:', error);
+        });
+    
+    return downloadURL;
+
+  } catch (error) {
+    console.error('Error generating image:', error);
+    return null; // Returning null to indicate failure
+  }
 }
+
+
 
 export {
 	gptCompletion,
