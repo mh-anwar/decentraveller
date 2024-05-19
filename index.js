@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import { exec } from 'child_process';
 import { convertToNear, nearConnection } from './near-functions.js';
-import crypto from 'crypto';
+
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -76,8 +76,7 @@ app.get('/get-coordinates', async (req, res) => {
 	}
 
 	try {
-		const re = await getGeocode(location);
-		const { lat, lng, city, country } = re; // Add equal sign (=) after the destructuring declaration
+		const { lat, lng } = await getGeocode(location);
 		const elevation = await getElevation(lat, lng);
 		// const nearbyPlaces = await getNearbyPlaces(lat, lng);
 		// const detailedPlaces = await getPlaceDetails(nearbyPlaces, lat, lng);
@@ -86,8 +85,6 @@ app.get('/get-coordinates', async (req, res) => {
 			latitude: lat,
 			longitude: lng,
 			elevation: elevation,
-			city: city,
-			country: country,
 			// nearbyPlaces: detailedPlaces
 		});
 	} catch (error) {
@@ -111,17 +108,14 @@ app.post('/generateImage', async (req, res) => {
 });
 
 app.post('/mintNft', async (req, res) => {
-	const data = req.body;
-	/* 	const accountId = data.accountId;
-	const tokenId = crypto.createHash('sha256');
-	tokenId.update(data.title);
-	const token = tokenId.digest('hex');
+	const data = await req.body;
+	console.log(data);
+	const accountId = data.accountId;
+	const privKey = 'adasdas';
 	const title = data.title;
 	const description = data.description;
 	const media = data.media;
-	console.log(
-		`./mint.sh ${accountId} ${token} ${title} ${description} ${media}`
-	); */
+
 	exec('./mint.sh', (error, stdout, stderr) => {
 		if (error) {
 			console.error(`Error executing script: ${error.message}`);
