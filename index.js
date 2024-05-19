@@ -146,6 +146,5 @@ app.listen(port, () => {
 // ping endpoint
 app.post('/ping', (req, res) => {
 	const data = req.body;
-	console.log(data);
 	res.send('pong');
 });
