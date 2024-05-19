@@ -99,8 +99,8 @@ app.post('/gptCompletion', async (req, res) => {
 	console.log('LOGSSS90 ' + body.value);
 	console.log('LOGSSS ' + JSON.stringify(req.body));
 
-	const response = gptCompletion(body.messages);
-	res.send(response);
+	//const response = gptCompletion(body);
+	res.send('Go get out you');
 });
 
 app.post('/generateImage', async (req, res) => {
