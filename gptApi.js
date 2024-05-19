@@ -15,7 +15,6 @@ async function gptCompletion(messages) {
 	return chatCompletion.choices[0];
 }
 
-console.log(await gptCompletion([{role: "system", content: "Given the address of a building, you will use the internet to classify the type of building it is. Your only output will be the classification, containing at most 10 words and atleast 6."}, {role: "user", content: "24 Forwell Creek Rd, Waterloo, ON N2J 3Z3"}]));
 // Function to convert degrees to radians
 function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -151,5 +150,22 @@ async function getPlaceDetails(places, lat, lng) {
     return placeDetails.filter(Boolean);
 }
 
+async function generateImage(image_description) {
+    try {
+      const response = await openai.images.generate({
+        prompt: image_description,
+        n: 1, // Number of images to generate
+        size: '1024x1024', // Size of the generated image
+      });
+  
+      const imageUrl = response.data[0].url;
+      console.log(imageUrl);
+      return imageUrl;
+    } catch (error) {
+      console.error("Error generating image:", error);
+      return null; // Returning null to indicate failure
+    }
+  }
+  
 
-export { gptCompletion, toRadians, haversineDistance, calculateVector, getGeocode, getElevation, getNearbyPlaces, getPlaceDetails };
+export { gptCompletion, generateImage, toRadians, haversineDistance, calculateVector, getGeocode, getElevation, getNearbyPlaces, getPlaceDetails };

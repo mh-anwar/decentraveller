@@ -6,7 +6,7 @@ import { convertToNear, nearConnection } from './near-functions.js';
 const app = express();
 const port = process.env.PORT || 4000;
 import axios from 'axios';
-import { gptCompletion, getElevation, getGeocode, getNearbyPlaces, getPlaceDetails } from './gptApi.js';
+import { gptCompletion, getElevation, getGeocode, getNearbyPlaces, getPlaceDetails, generateImage } from './gptApi.js';
 
 // Parses HTTP Request body
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -88,6 +88,14 @@ app.post('/gptCompletion', (req, res) => {
 	const response = gptCompletion(messages);
 	res.send(response);
 });
+
+app.post('/generateImage', async (req, res) => {
+	const prompt = req.body.prompt;
+	const response = await generateImage(prompt);
+	res.send(response);
+}
+);
+
 
 app.listen(port, () => {
 	console.log(`Running on port: ${port}`);
