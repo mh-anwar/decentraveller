@@ -94,13 +94,13 @@ app.get('/get-coordinates', async (req, res) => {
 });
 
 app.post('/gptCompletion', async (req, res) => {
-	const body = await req.body;
+	const body = await req.body; /* 
 	console.log('LOG60 ' + body);
-	console.log('LOGSSS90 ' + body.Value);
-	console.log('LOGSSS ' + JSON.stringify(req.body));
+	console.log('LOGSSS90 ' + body.Value); */
+	console.log('LOGSSS ' + JSON.stringify(req.body.Value));
 
-	//const response = gptCompletion(body);
-	res.send('Go get out you');
+	const response = gptCompletion(req.body.Value);
+	res.send(response);
 });
 
 app.post('/generateImage', async (req, res) => {
